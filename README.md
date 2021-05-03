@@ -12,8 +12,9 @@ Suppose you aim at creating quickly an adventure game (let say for a birthday gi
 
 ## How to use the engine
 
-- Assets are in the corresponding folder
-- the map is described in map.csv. Each cell is a tile.
+- The map is described in the spreadsheet map.csv. Each cell is a tile.
+- Assets are in the corresponding folder. The name of the files are XXX.png where XXX are the labels in the cells of the spreadsheet.
+- x is the player.
 - Use upper case for obstacles.
 - Lower case for regular decor.
 - Greek letters for passages.
