@@ -1,5 +1,7 @@
 import { CSVLoader } from './csvloader.js';
 import { Script } from './script.js';
+import { Cell } from './cell.js';
+
 
 export class Game {
     game;
@@ -9,6 +11,7 @@ export class Game {
     tunnels = {};
     state = {};
     script;
+    cells = [];
 
     constructor(game, filename) {
         this.game = game;
@@ -42,8 +45,10 @@ export class Game {
             for (let x = 0; x < array[y].length; x++)
                 if (array[y][x] == "x") {
                     this.player = this.game.physics.add.sprite(x * 32, y * 32, 'x');
-                    this.player.setBounce(2);
+                    this.player.setBounce(0);
                     this.player.setDepth(1);
+                    this.player.body.setSize(this.player.width, this.player.height / 2);
+                    this.player.body.setOffset(0, this.player.height / 2);
                     this.game.cameras.main.setBounds(0, 0, 200000, 600000);
                     this.game.cameras.main.startFollow(this.player);
                     this.player.body.setMaxSpeed(200);
@@ -52,16 +57,17 @@ export class Game {
 
 
     load(array) {
-        //  this.preload(array, () => this.create(array));
         this.create(array);
     }
 
     create(array) {
         this.createPlayer(array);
-        for (let y = 0; y < array.length; y++)
+        for (let y = 0; y < array.length; y++) {
+            this.cells[y] = [];
             for (let x = 0; x < array[y].length; x++)
-                if (array[y][x] != "x" && array[y][x] != "")
-                    this.addCell(x * 32, y * 32, array[y][x]);
+                this.cells[y][x] = this.addCell(x, y, array[y][x]);
+        }
+
 
         const firstWord = (a) => {
             if (a == undefined) return ""
@@ -94,55 +100,33 @@ export class Game {
     }
 
 
-    addCell(x, y, txt) {
-        const arg = txt.split(" ");
-
-        if (arg[0] == "sign") {
-            const sign = this.objects.create(x, y, 'sign');
-            this.game.physics.add.overlap(this.player, sign, () => this.currentFunction = () => this.showMessage(txt.substr(5)));
-        }
-        else if (arg[0].toUpperCase() === arg[0])
-            this.obstacles.create(x, y, arg[0]);
-        else if (arg[0].startsWith("obj")) {
-            const obj = this.objects.create(x, y, arg[0]);
-            this.game.physics.add.overlap(this.player, obj, () => {
-                this.state[arg[0]] = true;
-                obj.destroy();
-            });
-        }
-        else {
-            const obj = this.objects.create(x, y, arg[0]);
-            if (arg[1])
-                if (isGreek(arg[1])) {
-                    if (this.tunnels[arg[1]] == undefined)
-                        this.tunnels[arg[1]] = [];
-                    this.tunnels[arg[1]].push(obj);
-                    this.game.physics.add.overlap(this.player, obj, () => this.takeTunnel(arg[1], obj));
-                }
-
-            const func = () => this.script[arg[0]]();
-            if (this.script[arg[0]]) {
-                this.game.physics.add.overlap(this.player, obj, () => this.currentFunction = func);
-            }
-        }
-
-
-    }
+    addCell(ix, iy, txt) { return new Cell(this, ix, iy, txt); }
 
 
 
-    takeTunnel(label, differentFrom) {
+    takeTunnel(label, source) {
         setTimeout(() => {
-            const obj = this.tunnels[label][0] == differentFrom ? this.tunnels[label][1] : this.tunnels[label][0];
-            this.player.x = obj.x;
-            this.player.y = obj.y + 32;
+            const destination = this.tunnels[label][0] == source ? this.tunnels[label][1] : this.tunnels[label][0];
+            const ix = destination.x/32;
+            const iy = destination.y/32;
+            const setPlayerPosition = (iy, ix) => {
+                this.player.x = ix * 32;
+                this.player.y = iy * 32;
+            };
+            if (!this.cells[iy + 1][ix].isObstacle)
+                setPlayerPosition(iy + 1, ix);
+            else if (!this.cells[iy][ix + 1].isObstacle)
+                setPlayerPosition(iy, ix + 1);
+            else if (!this.cells[iy - 1][ix].isObstacle)
+                setPlayerPosition(iy - 1, ix);
+            else if (!this.cells[iy][ix - 1].isObstacle)
+                setPlayerPosition(iy, ix - 1);
+
         }, 300);
     }
 
 
-    update() {
-        this.currentFunction = this.hideMessage;
-    }
+    update() { this.currentFunction = this.hideMessage; }
 
     hideMessage() {
         if (this.msgTxt) {
@@ -168,6 +152,3 @@ export class Game {
 
 
 
-function isGreek(char) {
-    return 945 <= char.charCodeAt(0);
-}

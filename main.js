@@ -25,7 +25,7 @@ const config = {
 new Phaser.Game(config);
 
 function preload() {
-    const loadImg = (name) => this.load.image(name, `assets/${name}.png`);
+    const loadImg = (name) => this.load.image(name, `./assets/${name}.png`);
     ["b", "objHeart", "objFlute", "Fox", "g", "s", "sign", "p", "WALL", "door", "ROOF", "snow", "e", "M", "W", "R", "T", "x",
         "John"].map(loadImg);
 }
