@@ -1,9 +1,15 @@
+import { showMessage } from "./showMessage.js";
+
+/**
+ * a cell in the map
+ */
 export class Cell {
 
     isObstacle = false;
+    obj = undefined;
 
     constructor(game, ix, iy, txt) {
-        if (txt == "x" || txt == "")
+        if (txt == "player" || txt == "")
             return;
 
         const x = ix * 32;
@@ -11,38 +17,71 @@ export class Cell {
         const arg = txt.split(" ");
 
         if (arg[0] == "sign") {
-            const sign = game.objects.create(x, y, 'sign');
-            game.game.physics.add.overlap(game.player, sign, () => game.currentFunction = () => game.showMessage(txt.substr(5)));
+            this.obj = createObject(game.phaser, game.objects, x, y, 'sign');
+            //const sign = game.obstacles.create(x, y, 'sign');
+            game.phaser.physics.add.overlap(game.player.obj, this.obj,
+                () => game.currentFunction = () => showMessage(txt.substr(5)));
 
         }
         else if (arg[0].toUpperCase() === arg[0]) {
-            game.obstacles.create(x, y, arg[0]);
+            //game.obstacles.create(x, y, arg[0]);
+            this.obj = createObject(game.phaser, game.obstacles, x, y, arg[0]);
             this.isObstacle = true;
         }
         else if (arg[0].startsWith("obj")) {
-            const obj = game.objects.create(x, y, arg[0]);
+            this.obj = createObject(game.phaser, game.objects, x, y, arg[0]);
 
-            game.game.physics.add.overlap(game.player, obj, () => {
+            game.phaser.physics.add.overlap(game.player.obj, this.obj, () => {
                 game.state[arg[0]] = true;
-                obj.destroy();
+                this.obj.destroy();
             });
         }
         else {
-            const obj = game.objects.create(x, y, arg[0]);
+            this.obj = createObject(game.phaser, game.objects, x, y, arg[0]);
             if (arg[1])
                 if (isGreek(arg[1])) {
                     if (game.tunnels[arg[1]] == undefined)
                         game.tunnels[arg[1]] = [];
-                    game.tunnels[arg[1]].push(obj);
-                    game.game.physics.add.overlap(game.player, obj, () => game.takeTunnel(arg[1], obj));
+                    game.tunnels[arg[1]].push(this.obj);
+                    game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.takeTunnel(arg[1], this.obj));
                 }
 
-            const func = () => game.script[arg[0]]();
+            const func = () => {
+                game.script[arg[0]]();
+                game.refresh();
+            }
             if (game.script[arg[0]]) {
-                game.game.physics.add.overlap(game.player, obj, () => game.currentFunction = func);
+                game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.currentFunction = func);
             }
         }
+    }
+
+
+
+    destroy() {
+        if (this.obj)
+            this.obj.destroy();
     }
 }
 
 function isGreek(char) { return 945 <= char.charCodeAt(0); }
+
+
+function createObject(phaser, collection, x, y, filename) {
+    if (phaser.textures.exists(filename)) {
+        // texture already exists so just create a card and return it
+        return collection.create(x, y, filename);
+    }
+
+    // texture needs to be loaded to create a placeholder card
+    const obj = collection.create(x, y, "none");
+
+    // ask the LoaderPlugin to load the texture
+    phaser.load.image(filename, `assets/${filename}.png`)
+    phaser.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        // texture loaded so use instead of the placeholder
+        obj.setTexture(filename)
+    })
+    phaser.load.start();
+    return obj;
+}
