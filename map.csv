@@ -1,35 +1,35 @@
 T;T;T;T;T;T;T;T;T;T;T;T;T;T;T;T;T;e β;T;e β;T;T;T;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M
-T;T;T;T;T;T;;R;R;;;;;;T;T;T;p;T;p;T;T;T;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M
-T;g;;R;;;;;;g;;;;;;;T;p;T;p;T;;;;M;M;M;M;M;M;M;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
-T;;g;;;M;M;M;;;;;;;;;;p;T;p;;;;;;;;;;;;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
+T;T;T;T;;T;;R;R;;;;;;T;T;T;p;T;p;T;T;T;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M;M
+T;g;;;;;;;;g;;;;;;;T;p;T;p;T;;;;M;M;M;M;M;M;M;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
+T;;g;;;M;M;M;;;;;Bob;;;;;p;T;p;;;;;;;;;;;;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
 T;;;;sign Grotte de l’Amour;M;e α;M;;;;;;;;;;p;T;p;;;;;;;;;;;;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
 T;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;T;p;p;p;;;;;;;;;;;;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
-T;;;;;p;;;;;;;;;;p;;;T;p;;p;;;;;;;;;;x;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
-T;;;;;p;;;;;;;;;;p;T;T;T;p;;p;;;;;;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
-T;;;;W;b;W;W;W;W;W;W;W;;;p;T;T;T;p;;p;p;p;p;p;p;p;p;p;p;p;p;e γ;M;e γ;s;s;s;s;s;s;e ε;M;p;M;e ε;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
-T;;;;W;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;;;;;;;;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
-T;;;;W;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;;;;;T;T;T;T;T;T;T;T;T;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
+T;;;;John;p;;;;;;;;;;p;;;T;p;;p;;;;;;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
+T;;;;player;p;;;;;;;;;;p;T;T;T;p;;p;;;;;;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
+T;;;;ok ? W : p;b;W;W;W;W;W;W;W;;;p;T;T;T;p;;p;p;p;p;p;p;p;p;p;p;p;p;e γ;M;e γ;s;s;s;s;s;s;e ε;M;p;M;e ε;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
+T;;;;ok ? W : p;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;;;;;;;;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
+T;;;;ok ? W : p;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;;;;;T;T;T;T;T;T;T;T;T;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
 T;;;;W;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;T;;T;;T;;T;;;;;;;M;M;M;s;s;s;s;s;s;M;M;p;M;M;snow;snow;snow;snow;snow;snow;M;M;M;M;M;M
 T;;;;W;b;W;W;;;;;objHeart;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;T;M;M;M;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
-T;;;;W;b;W;W;;M;M;M;;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;T;T;T;T;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
+T;;;;W;b;W;W;;M;M;M;objFlute;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;T;T;T;T;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
 T;;;;W;b;W;W;;M;e α;M;;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;;T;T;T;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
 T;;;W;W;b;W;W;;;;;;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;;;;T;M;M;M;M;M;M;M;M;p;M;M;M;M;M;M;M;M;M;M;M;M;M;M
 T;T;T;W;W;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;;;;T;;;;;;;M;M;p;M;M;;;;;;;;;;;;
 T;T;T;W;W;b;W;W;W;W;W;W;W;W;;p;T;T;T;p;T;;T;;T;;T;;T;T;;T;;Fox;;T;;;;;;;;;p;;;;;;;;;;;;;;
-W;W;W;W;W;b;b;b;b;b;b;b;b;b;;p;p;T;p;p;T;;T;;T;;T;;T;T;;T;Fox;;Fox;T;T;;;;;;;;p;;;;;;;;;;;;;;
-W;W;W;W;W;b;W;W;W;W;W;W;W;W;;;;T;;;T;;;;T;;T;objFlute;T;T;;T;;Fox;;T;T;;;;;;;;p;;;;;;;;;;;;;;
-W;W;W;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;T;T;T;T;T;;T;T;T;T;;T;;Fox;;T;T;;;;;;;;p;;;;;;;;;;;;;;
-T;T;T;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;;;;;;;;;;;;T;;;;T;T;;;;;;;;p;;;;;;;;;;;;;;
-T;T;T;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;;;;;;;;;;;;;;;;;T;;;;;;;;p;;;;;;;;;;;;;;
-T;;;W;W;W;W;W;W;W;W;W;W;W;T;T;T;T;T;T;T;T;T;T;T;;T;T;T;T;T;T;T;T;T;T;T;;;;;;;;p;;;;;;;;;;;;;;
-T;;;W;W;W;W;W;W;W;W;W;W;T;T;T;T;;;;;;;;;;;;;T;T;T;T;T;T;T;T;;;;;;;;p;;;;;;;;;;;;;;
-T;;;;;;;;;W;W;W;W;T;T;T;T;;;;;;;;;;;;;;;;;;;;T;;;;;;;;p;;;;;;;;;;;;;;
+W;W;W;W;W;b;b;b;b;b;b;b;b;b;;p;p;T;p;p;T;;T;;T;;T;;T;T;;T;Fox;;Fox;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+W;W;W;W;W;b;W;W;W;W;W;W;W;W;;;;T;;;T;;;;T;;T;objFlute;T;T;;T;;Fox;;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+W;W;W;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;T;T;T;T;T;;T;T;T;T;;T;;Fox;;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+T;T;T;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;;;;;;;;;;;;T;;;;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+T;T;T;W;W;b;W;W;W;W;W;W;W;W;T;T;T;T;T;T;;;;;;;;;;;;;;;;;T;;;;;;;;p;;;;T;;;;;;;;;;
+T;;;W;W;W;W;W;W;W;W;W;W;W;T;T;T;T;T;T;T;T;T;T;T;;T;T;T;T;T;T;T;T;T;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+T;;;W;W;W;W;W;W;W;W;W;W;T;T;T;T;;;;;;;;;;;;;T;T;T;T;T;T;T;T;;;;;;;;p;;;;T;;;;;;;;;;
+T;;;;;;;;;W;W;W;W;T;T;T;T;;;;;;;;;;;;;;;;;;;;T;;;;;;;;p;;;;T;;;;;;;;;;
 T;T;;;;;;;;;;;;;;;T;T;T;T;T;T;T;T;T;T;T;;;;;T;T;T;T;T;T;;;;;;;;p;;;;;;;;;;;;;;
 T;T;;;;ROOF;ROOF;ROOF;;;;;;;;;;;;;;;;;;;;T;T;;;T;T;T;T;T;T;;;;;;;;p;;;;;;;;;;;;;;
-T;T;;;;WALL;WALL;WALL;;;;;;;;;;;;;;;;;;;;;T;;;T;T;T;T;T;;;;;;;;;p;;;;;;;;;;;;;;
-T;T;;;;WALL;door;WALL;;;John;;;;;;;;;;;;;;;;;;;p;p;;;;;;;;;;;;;;p;;;;;;;;;;;;;;
+T;T;;;;WALL;WALL;WALL;;;;;;;;;;T;;;;;;;;;;;T;;;T;T;T;T;T;;;;;;;;;p;;;;;;;;;;;;;;
+T;T;;;;WALL;door;WALL;;;;;;;;;;;;;;;;;;;;;;p;p;;;;;;;;;;;;;;p;;;;;;;;;;;;;;
 T;T;;;;;p;;;;;;;;;;;;;;;;;;;;;;;p;p;;;;;;;;;;;;;;p;;;;;;;;;;;;;;
-T;T;;;;;p;;;;;;;;;;;;;;;;;;;;;;;p;p;;;;;;;;;;;;;;p;;;;;;;;;;;;;;
+T;T;;;T;;p;;;;;;;;;;;;;;;;;;;;;;;p;p;;;;;;;;;;;;;;p;;;;;;;;;;;;;;
 T;T;;;;;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;p;;;;;;;;;
 T;T;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 T;T;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
