@@ -1,4 +1,5 @@
 import { CSVLoader } from './csvloader.js';
+import { ODSLoader } from './odsloader.js';
 import { Script } from './script.js';
 import { Cell } from './cell.js';
 import { Person } from './person.js';
@@ -23,11 +24,17 @@ export class Game {
         this.script = new Script(this);
         this.obstacles = game.physics.add.staticGroup();
         this.objects = game.physics.add.staticGroup();
-        CSVLoader.arrayFromFile(filename).then((array) => {
-            this.cellTextContents = array;
-            this.setupPlayer(array);
-            this.load();
+        ODSLoader.dataFromFile(filename).then((data) => {
+            this.cellTextContents = data.content;
+            this.loadBackgroundColor(data.style);
+            this.setupPlayer(this.cellTextContents);
+            this.load()
         });
+        /*  CSVLoader.arrayFromFile(filename).then((array) => {
+              this.cellTextContents = array;
+              this.setupPlayer(array);
+              this.load();
+          });*/
     }
 
 
@@ -102,6 +109,20 @@ export class Game {
             return exprs[1].trim();
     }
 
+
+    loadBackgroundColor(array) {
+        for (let y = 0; y < array.length; y++) {
+            for (let x = 0; x < array[y].length; x++) {
+                if (array[y][x]) {
+                    console.log(array[y][x])
+                    this.phaser.add.rectangle(x * 32, y * 32, 32, 32, array[y][x].replace("#", "0x"));
+                }
+
+            }
+        }
+    }
+
+
     load() {
         const array = this.cellTextContents;
         const evalArray = [];
@@ -110,8 +131,15 @@ export class Game {
             this.cells[y] = [];
             evalArray[y] = [];
             for (let x = 0; x < array[y].length; x++) {
-                evalArray[y][x] = this.evalCellExpression(array[y][x]);
-                this.cells[y][x] = new Cell(this, x, y, evalArray[y][x]);
+                if (array[y][x]) {
+                    evalArray[y][x] = this.evalCellExpression(array[y][x]);
+                    this.cells[y][x] = new Cell(this, x, y, evalArray[y][x]);
+                }
+                else {
+                    this.cells[y][x] = new Cell(this, x, y, "");
+                    //console.log(`not defined at ${x} ${y}`);
+                }
+
             }
         }
 
@@ -181,13 +209,20 @@ export class Game {
                 this.player.setDirection(px, py);
             };
 
-            if (!this.cells[iy + 1][ix].isObstacle)
+            const isObstacle = (iy, ix) => {
+                if (this.cells[iy] == undefined)
+                    return false;
+                if (this.cells[iy][ix] == undefined)
+                    return false;
+                return this.cells[iy][ix].isObstacle;
+            }
+            if (isObstacle(iy + 1, ix))
                 setPlayerPosition(0, 0.6);
-            else if (!this.cells[iy][ix + 1].isObstacle)
+            else if (isObstacle(iy, ix + 1))
                 setPlayerPosition(1, 0);
-            else if (!this.cells[iy - 1][ix].isObstacle)
+            else if (isObstacle(iy - 1, ix))
                 setPlayerPosition(0, -1);
-            else if (!this.cells[iy][ix - 1].isObstacle)
+            else if (isObstacle(iy, ix - 1))
                 setPlayerPosition(- 1, 0);
             this.player.enable();
             this.phaser.cameras.main.fadeIn(1000, 0, 0, 0);
