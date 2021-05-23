@@ -34,6 +34,7 @@ export class Cell {
             game.phaser.physics.add.overlap(game.player.obj, this.obj, () => {
                 game.state[arg[0]] = true;
                 this.obj.destroy();
+                game.refresh();
             });
         }
         else {
@@ -46,12 +47,18 @@ export class Cell {
                     game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.takeTunnel(arg[1], this.obj));
                 }
 
-            const func = () => {
+            const funcWhenAction = () => {
                 game.script[arg[0]]();
                 game.refresh();
             }
+            const funcWhenOn = game.script["on_" + arg[0]];
+
+
             if (game.script[arg[0]]) {
-                game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.currentFunction = func);
+                game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.currentFunction = funcWhenAction);
+            }
+            if (funcWhenOn) {
+                game.phaser.physics.add.overlap(game.player.obj, this.obj, () => game.script["on_" + arg[0]]());
             }
         }
     }

@@ -18,33 +18,73 @@ export class Game {
 
     constructor(game, filename) {
         this.phaser = game;
+        this.state = this.readStateFromURL();
+        console.log(this.state);
         this.script = new Script(this);
         this.obstacles = game.physics.add.staticGroup();
         this.objects = game.physics.add.staticGroup();
         CSVLoader.arrayFromFile(filename).then((array) => {
             this.cellTextContents = array;
-            this.createPlayer(array);
+            this.setupPlayer(array);
             this.load();
         });
     }
 
 
 
-    createPlayer(array) {
-        for (let y = 0; y < array.length; y++)
-            for (let x = 0; x < array[y].length; x++)
-                if (array[y][x] == "player") {
-                    this.player = new Person(this, 'player', x * 32, y * 32);
-                    this.phaser.cameras.main.setBounds(0, 0, 200000, 600000);
-                    this.phaser.cameras.main.startFollow(this.player.obj);
+    readStateFromURL() {
+        const search = location.search.substring(1);
+        console.log(search);
+        if (search == "")
+            return {};
+        else
+            return JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) });
+    }
 
-                }
+
+
+    storeStateIntoURL() {
+        let url = "";
+        for (var key in this.state) {
+            if (url != "") {
+                url += "&";
+            }
+            url += key + "=" + encodeURIComponent(this.state[key]);
+        }
+        history.pushState({}, null, "?" + url);
+    }
+
+
+    createPlayer(x, y) {
+        this.player = new Person(this, 'player', x, y);
+        this.phaser.cameras.main.setBounds(0, 0, 200000, 600000);
+        this.phaser.cameras.main.startFollow(this.player.obj);
+    }
+
+    setupPlayer(array) {
+        if (this.state["x"] && this.state["y"]) {
+            this.createPlayer(parseInt(this.state["x"]), parseInt(this.state["y"]));
+        }
+        else {
+            for (let y = 0; y < array.length; y++)
+                for (let x = 0; x < array[y].length; x++)
+                    if (array[y][x] == "player")
+                        this.createPlayer(x * 32, y * 32);
+        }
+
     }
 
 
     evalCellExpression(expr) {
         if (expr.startsWith("sign "))
             return expr;
+
+        if (expr.startsWith("obj")) {
+            if (this.state[expr]) //the player already has the object
+                return "";
+            else
+                return expr;
+        }
 
         if (expr.indexOf("?") < 0)
             return expr;
@@ -121,12 +161,18 @@ export class Game {
 
 
     refresh() {
+        this.state["x"] = this.player.obj.x;
+        this.state["y"] = this.player.obj.y;
         this.free();
         this.load();
+        this.storeStateIntoURL();
     }
 
     takeTunnel(label, source) {
-        setTimeout(() => {
+
+
+        this.player.disable();
+        this.phaser.cameras.main.fadeOut(1000, 0, 0, 0, () => {
             const destination = this.tunnels[label][0] == source ? this.tunnels[label][1] : this.tunnels[label][0];
             const ix = destination.x / 32;
             const iy = destination.y / 32;
@@ -136,15 +182,16 @@ export class Game {
             };
 
             if (!this.cells[iy + 1][ix].isObstacle)
-                setPlayerPosition(0, 1);
+                setPlayerPosition(0, 0.6);
             else if (!this.cells[iy][ix + 1].isObstacle)
                 setPlayerPosition(1, 0);
             else if (!this.cells[iy - 1][ix].isObstacle)
-                setPlayerPosition(0, - 1);
+                setPlayerPosition(0, -1);
             else if (!this.cells[iy][ix - 1].isObstacle)
                 setPlayerPosition(- 1, 0);
-
-        }, 300);
+            this.player.enable();
+            this.phaser.cameras.main.fadeIn(1000, 0, 0, 0);
+        });
     }
 
 

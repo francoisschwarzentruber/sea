@@ -34,4 +34,12 @@ export class Script {
         await showMessage("Hey, nous sommes les Fleet Foxes !");
     }
 
+
+/**    
+ * for instance, it is executed when the player is on a tile of type p
+ * on_p() {
+        this.game.player.setDefaultVelocity(80, 0);
+    }
+     */
+
 }
