@@ -1,47 +1,80 @@
-import { CSVLoader } from './csvloader.js';
 import { ODSLoader } from './odsloader.js';
 import { Script } from './script.js';
-import { Cell } from './cell.js';
 import { Person } from './person.js';
+import { CellParser } from './cellparser.js';
+import { MapCellsPortion } from './mapCellsPortion.js';
 
 
 export class Game {
-    phaser;
-    obstacles;
-    player;
-    currentFunction = () => { };
-    tunnels = {};
-    state = {};
-    script;
-    cells = [];
-    cellTextContents = [];
-    lines = [];
+    phaser; //the main "this" object of phaser
+    obstacles; //collection of obstacles sprite
+    player; // the player
+    currentFunction = () => { }; // the function to be called when pressing action button
+    tunnels = {}; //connection between doors, portals
+    state = {}; //current state
+    script; //script object
+
+    cellTextContents = []; //strings of map.ods
+    backgroundColors = []; //background colors from map.ods
+    previousMusicName = undefined;
+
+    musics = [];
+    isTakeTunnel = false;
 
     constructor(game, filename) {
         this.phaser = game;
         this.state = this.readStateFromURL();
-        console.log(this.state);
+        //console.log("the current state is: " + this.state);
         this.script = new Script(this);
-        this.obstacles = game.physics.add.staticGroup();
-        this.objects = game.physics.add.staticGroup();
+        if (location.search.substring(1) == "")
+            this.script.init();
+
         ODSLoader.dataFromFile(filename).then((data) => {
             this.cellTextContents = data.content;
-            this.loadBackgroundColor(data.style);
+            this.backgroundColors = data.style;
             this.setupPlayer(this.cellTextContents);
-            this.load()
+            this.handleMusic();
+            this.loadTunnels();
+            this.mapCellsPortion = new MapCellsPortion(this);
+            this.mapCellsPortion.load();
+
         });
-        /*  CSVLoader.arrayFromFile(filename).then((array) => {
-              this.cellTextContents = array;
-              this.setupPlayer(array);
-              this.load();
-          });*/
+
     }
 
 
 
+
+    handleMusic() {
+        try {
+
+            const bg = this.backgroundColors[Math.floor(this.player.obj.y / 32)][Math.floor(this.player.obj.x / 32)];
+            let key = (bg == undefined) ? "" : bg;
+            if (key == "#afd095")
+                key = "";
+
+            if (key !== this.previousMusicName) {
+                console.log("change music for " + key);
+
+                if (this.musics[key] == undefined)
+                    this.musics[key] = this.phaser.sound.add('music' + key);
+                this.musics[key].loop = true;
+
+                this.musics[key].play();
+
+                if (this.previousMusicName != undefined)
+                    this.musics[this.previousMusicName].pause();
+                this.previousMusicName = key;
+            }
+        }
+        catch (e) {
+            // console.log(e);
+        }
+
+    }
+
     readStateFromURL() {
         const search = location.search.substring(1);
-        console.log(search);
         if (search == "")
             return {};
         else
@@ -81,7 +114,14 @@ export class Game {
 
     }
 
-
+    /**
+     * 
+     * @param {*} expr 
+     * @returns evaluate the expression expr in the context of the current state
+     * Usually, expressions are constant (e.g. floor, WALL, etc.). But sometimes, they are conditionnal, e.g:
+     * isMagical ? floor : WALL
+     * Typically, evalCellExpression("isMagical ? floor : WALL") returns "floor" if this.state.isMagical and "WALL" otherwise
+     */
     evalCellExpression(expr) {
         if (expr.startsWith("sign "))
             return expr;
@@ -110,147 +150,129 @@ export class Game {
     }
 
 
-    loadBackgroundColor(array) {
-        for (let y = 0; y < array.length; y++) {
-            for (let x = 0; x < array[y].length; x++) {
-                if (array[y][x]) {
-                    console.log(array[y][x])
-                    this.phaser.add.rectangle(x * 32, y * 32, 32, 32, array[y][x].replace("#", "0x"));
-                }
 
-            }
-        }
-    }
-
-
-    load() {
+    /**
+     * load the tunnels, that are the way from a door to another door for instance
+     */
+    loadTunnels() {
         const array = this.cellTextContents;
-        const evalArray = [];
 
-        for (let y = 0; y < array.length; y++) {
-            this.cells[y] = [];
-            evalArray[y] = [];
-            for (let x = 0; x < array[y].length; x++) {
-                if (array[y][x]) {
-                    evalArray[y][x] = this.evalCellExpression(array[y][x]);
-                    this.cells[y][x] = new Cell(this, x, y, evalArray[y][x]);
-                }
-                else {
-                    this.cells[y][x] = new Cell(this, x, y, "");
-                    //console.log(`not defined at ${x} ${y}`);
-                }
-
-            }
-        }
-
-
-        const firstWord = (a) => {
-            if (a == undefined) return ""
-            else return a != "" ? a.split(" ")[0] : "";
-        }
-
-        const needLine = (a, b) => {
-            a = firstWord(a);
-            b = firstWord(b);
-            const GAGA = ["W", "M", "WALL", "ROOF"];
-            return (GAGA.indexOf(a) >= 0) || (GAGA.indexOf(b) >= 0);
-        }
-
-        for (let iy = 0; iy < array.length - 1; iy++)
-            for (let ix = 0; ix < array[iy].length; ix++) {
-                if (evalArray[iy][ix] != evalArray[iy + 1][ix] && needLine(evalArray[iy][ix], evalArray[iy + 1][ix])) {
-                    this.lines.push(this.phaser.add.line(ix * 32, iy * 32, 0, 16, 32, 16, "black"));
-                }
-            }
-
-        for (let iy = 0; iy < array.length; iy++)
-            for (let ix = 0; ix < array[iy].length - 1; ix++) {
-                if (evalArray[iy][ix] != evalArray[iy][ix + 1] && needLine(evalArray[iy][ix], evalArray[iy][ix + 1])) {
-                    this.lines.push(this.phaser.add.line(ix * 32, iy * 32, 16, 0, 16, 32, "black"));
-                }
-            }
-
-        this.phaser.physics.add.collider(this.player.obj, this.obstacles);
-    }
-
-
-
-    free() {
-        const array = this.cells;
-        for (let y = 0; y < array.length; y++) {
-            for (let x = 0; x < array[y].length; x++)
-                this.cells[y][x].destroy();
-        }
-        this.lines.map((line) => line.destroy());
-        this.lines = [];
         this.tunnels = {};
+        for (let y = 0; y < array.length; y++) {
+            for (let x = 0; x < array[y].length; x++) {
+                const txt = this.evalCellExpression(array[y][x]);
+                const arg = txt.split(" ");
+                if (arg[0]) {
+                    if (arg[0] != "sign")
+                        if (arg[1]) {
+                            if (CellParser.isTunnel(arg[1])) {
+                                if (this.tunnels[arg[1]] == undefined)
+                                    this.tunnels[arg[1]] = [];
+                                this.tunnels[arg[1]].push({ ix: x, iy: y });
+                            }
+                        }
+                }
+
+            }
+        }
+        console.log("tunnels are:")
+        console.log(this.tunnels)
+
     }
 
 
 
+
+
+    /**
+     * @description store the state in the URL + reload the map to update it
+     */
     refresh() {
-        this.state["x"] = this.player.obj.x;
-        this.state["y"] = this.player.obj.y;
-        this.free();
-        this.load();
+        this.state["x"] = Math.round(this.player.obj.x);
+        this.state["y"] = Math.round(this.player.obj.y);
+        this.loadTunnels();
+        this.mapCellsPortion.destroy();
+        this.mapCellsPortion.load();
         this.storeStateIntoURL();
     }
 
+
+    /**
+     * 
+     * @param {*} ix 
+     * @param {*} iy 
+     * @returns true if it is an obstacle (/!\ does not work for conditional expression)
+     */
+    isObstacle(ix, iy) {
+        if (this.cellTextContents[iy] == undefined)
+            return true;
+        if (this.cellTextContents[iy][ix] == undefined)
+            return true;
+        if (this.cellTextContents[iy][ix] == "")
+            return false;
+        return CellParser.isLabelObstacle(this.cellTextContents[iy][ix].trim());
+    }
+
+    /**
+     * 
+     * @param {*} label, e.g. 1, 2, 3...
+     * @param {*} source, e.g. a point {ix: 42 iy: 17}
+     * @effect the player takes the tunnel of the corresponding label from the source
+     */
     takeTunnel(label, source) {
+        const DURATION = 500;
+        if (this.isTakeTunnel)
+            return;
+        console.log(`take tunnel ${label} from source ${source.ix}, ${source.iy}`);
+        const entrance1 = this.tunnels[label][0];
+        const entrance2 = this.tunnels[label][1];
+        const destination = (entrance1.ix == source.ix && entrance1.iy == source.iy)
+            ? entrance2 : entrance1;
 
+        if (destination == undefined) {
+            console.log(`problem with tunnel ${label}: destination is undefined`);
+            return;
+        }
 
+        this.isTakeTunnel = true;
         this.player.disable();
-        this.phaser.cameras.main.fadeOut(1000, 0, 0, 0, () => {
-            const destination = this.tunnels[label][0] == source ? this.tunnels[label][1] : this.tunnels[label][0];
-            const ix = destination.x / 32;
-            const iy = destination.y / 32;
+
+        const afterFadeOut = () => {
+            console.log(`goto ${destination.ix}, ${destination.iy}`);
+            const ix = destination.ix;
+            const iy = destination.iy;
             const setPlayerPosition = (px, py) => {
                 this.player.setPosition(ix * 32 + px * 32, iy * 32 + py * 32);
                 this.player.setDirection(px, py);
             };
 
-            const isObstacle = (iy, ix) => {
-                if (this.cells[iy] == undefined)
-                    return false;
-                if (this.cells[iy][ix] == undefined)
-                    return false;
-                return this.cells[iy][ix].isObstacle;
-            }
-            if (isObstacle(iy + 1, ix))
+
+            if (!this.isObstacle(ix, iy + 1))
                 setPlayerPosition(0, 0.6);
-            else if (isObstacle(iy, ix + 1))
+            else if (!this.isObstacle(ix + 1, iy))
                 setPlayerPosition(1, 0);
-            else if (isObstacle(iy - 1, ix))
-                setPlayerPosition(0, -1);
-            else if (isObstacle(iy, ix - 1))
-                setPlayerPosition(- 1, 0);
+            else if (!this.isObstacle(ix, iy - 1))
+                setPlayerPosition(0, -1.5);
+            else if (!this.isObstacle(ix - 1, iy))
+                setPlayerPosition(-1.5, 0);
+            else
+                setPlayerPosition(0, 0);
             this.player.enable();
-            this.phaser.cameras.main.fadeIn(1000, 0, 0, 0);
-        });
+            this.isTakeTunnel = false;
+            this.phaser.cameras.main.fadeIn(DURATION, 0, 0, 0);
+
+        };
+
+        this.phaser.cameras.main.fadeOut(DURATION, 0, 0, 0);
+        setTimeout(afterFadeOut, DURATION);
     }
 
 
-    update() { this.currentFunction = this.hideMessage; }
-
-    hideMessage() {
-        if (this.msgTxt) {
-            this.msgTxt.text = "";
-            this.msgTxt.destroy();
-            this.msgTxt = undefined;
-        }
-
+    update() {
+        this.mapCellsPortion.update();
+        this.currentFunction = () => { };
+        this.handleMusic();
     }
-
-    msgTxt = undefined;
-
-    showMessage(msg) {
-        if (this.msgTxt) {
-            this.msgTxt.text = msg;
-        } else
-            this.msgTxt = this.phaser.add.text(this.player.obj.x, this.player.obj.y - 64, msg, { color: "black", font: '"Press Start 2P"', wordWrap: { width: 200, useAdvancedWrap: true } });
-    }
-
-
 
 }
 

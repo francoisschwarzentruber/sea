@@ -15,26 +15,38 @@ sceneMenu.create = function () {
 
 
 
+sceneMenu.show = function () {
+    sceneGame.pause();
+    this.r = this.add.rectangle(320, 240, 600, 450, 0x222288);
+    this.menuText = this.add.text(100, 50, "[Inventaire]",
+        { color: "white", fontFamily: 'Arial', fontSize: '24px', wordWrap: { width: 400, useAdvancedWrap: true } });
+
+    let iy = 0;
+    this.objText = [];
+    for (const key in game.state)
+        if (key.startsWith("obj")) {
+            this.objText.push(this.add.text(100, 50 + 40 + iy * 32, ". " + key.slice(3),
+                { color: "white", fontFamily: 'Arial', fontSize: '18px', wordWrap: { width: 400, useAdvancedWrap: true } }));
+            iy += 1;
+        }
+}
+
+
+sceneMenu.hide = function() {
+    sceneGame.resume();
+    this.r.destroy();
+    this.menuText.destroy();
+    this.objText.map((o) => o.destroy());
+
+}
+
 sceneMenu.toggle = function () {
     //sceneMenu.
     if (!sceneMenu.visible) {
-        this.r = this.add.rectangle(320, 240, 600, 450, 0x222288);
-        this.menuText = this.add.text(100, 50, "Menu",
-            { color: "white", fontFamily: 'Arial', fontSize: '24px', wordWrap: { width: 400, useAdvancedWrap: true } });
-
-        let iy = 0;
-        this.objText = [];
-        for (const key in game.state)
-            if (key.startsWith("obj")) {
-                this.objText.push(this.add.text(100, 50 + 40 + iy * 32, key.slice(3),
-                    { color: "white", fontFamily: 'Arial', fontSize: '18px', wordWrap: { width: 400, useAdvancedWrap: true } }));
-                iy += 1;
-            }
+        sceneMenu.show();
     }
     else {
-        this.r.destroy();
-        this.menuText.destroy();
-        this.objText.map((o) => o.destroy());
+       sceneMenu.hide();
     }
     sceneMenu.visible = !sceneMenu.visible;
 }
