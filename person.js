@@ -1,3 +1,5 @@
+const AMOUNT = 200;
+
 export class Person {
     phaser;
     actionAllowed;
@@ -34,10 +36,10 @@ export class Person {
     updateImageStaticDirection() { this.obj.anims.play('karine' + this.direction, true); }
 
     static getDirectionName(x, y) {
-        if (x < 0 && y == 0) return "left";
-        if (x > 0 && y == 0) return "right";
-        if (x == 0 && y < 0) return "up";
-        if (x == 0 && y > 0) return "down";
+        if (x < 0 && Math.abs(y) < -x) return "left";
+        if (x > 0 && Math.abs(y) <= x) return "right";
+        if (Math.abs(x) < -y && y < 0) return "up";
+        if (Math.abs(x) <= y && y > 0) return "down";
         return "arf";
     }
 
@@ -45,6 +47,30 @@ export class Person {
 
     enable() { this.enabled = true; }
     disable() { this.enabled = false; }
+
+    walk(x, y) {
+        this.obj.setVelocityX(x);
+        this.obj.setVelocityY(y);
+        this.direction = Person.getDirectionName(x, y);
+        this.obj.anims.play('karinewalk' + this.direction, true);
+    }
+
+    stop() {
+        this.obj.setVelocityX(this.dx);
+        this.obj.setVelocityY(this.dy);
+        this.updateImageStaticDirection();
+        this.game.player.setDefaultVelocity(0, 0);
+    }
+
+
+    control() {
+        if (this.phaser.input.gamepad.total === 0)
+            this.controlviaKeyBoard();
+        else
+            this.controlviaGamePad();
+    }
+
+
 
     controlviaKeyBoard() {
         if (!this.enabled) {
@@ -54,30 +80,34 @@ export class Person {
             return;
         }
 
-        const walk = (x, y) => {
-            this.obj.setVelocityX(x);
-            this.obj.setVelocityY(y);
-            this.direction = Person.getDirectionName(x, y);
-            this.obj.anims.play('karinewalk' + this.direction, true);
-        }
 
-        const AMOUNT = 200;
         if (this.phaser.keyCursors.left.isDown)
-            walk(-AMOUNT, 0);
+            this.walk(-AMOUNT, 0);
         else if (this.phaser.keyCursors.right.isDown)
-            walk(AMOUNT, 0);
+            this.walk(AMOUNT, 0);
         else if (this.phaser.keyCursors.up.isDown)
-            walk(0, -AMOUNT);
+            this.walk(0, -AMOUNT);
         else if (this.phaser.keyCursors.down.isDown)
-            walk(0, AMOUNT);
-        else if (Phaser.Input.Keyboard.JustDown(this.phaser.spaceBar)) {
+            this.walk(0, AMOUNT);
+        else if (Phaser.Input.Keyboard.JustDown(this.phaser.spaceBar))
             this.game.currentFunction();
-        }
-        else {
-            this.obj.setVelocityX(this.dx);
-            this.obj.setVelocityY(this.dy);
-            this.updateImageStaticDirection();
-            this.game.player.setDefaultVelocity(0, 0);
+        else
+            this.stop();
+    }
+
+    controlviaGamePad() {
+        const pad = this.phaser.input.gamepad.getPad(0);
+        if (pad.buttons[0].value > 0)
+            this.game.currentFunction();
+        if (pad.axes.length) {
+            const axisH = pad.axes[0].getValue();
+            const axisV = pad.axes[1].getValue();
+
+            if (axisH == 0 && axisV == 0)
+                this.stop();
+            else
+                this.walk(AMOUNT * axisH, AMOUNT * axisV);
+
         }
     }
 }

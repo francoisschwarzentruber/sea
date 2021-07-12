@@ -12,19 +12,21 @@ Suppose you aim at creating quickly an adventure game (let say for a birthday gi
 
 ## How to use the engine
 
-- The map is described in the spreadsheet map.csv. Each cell is a tile.
+- The map is described in the spreadsheet map.ods. Each cell is a tile.
 - Assets are in the corresponding folder. The name of the files are XXX.png where XXX are the labels in the cells of the spreadsheet.
-- x is the player.
+- write player in the cell where the player should start.
 - Use upper case for obstacles.
 - Lower case for regular decor.
-- Greek letters for passages.
+- Greek letters or numbers for passages.
 - objXXXX for objects to collect.
-- and if needed write some scripts in script.js
+- and if you need special scripts, write them in script.js
+
+
+## Save the progression
+
+For saving your current game session, just copy the URL. Objects and position of the player are directly stored in the URL.
 
 ## Roadmap
 
 Coming soon:
-- title screen
-- ennemies
-- music
-- sound
+- ennemies, at some point...

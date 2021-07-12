@@ -13,11 +13,11 @@ sceneTitle.preload = function () {
 sceneTitle.create = function () {
     const key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.r = this.add.rectangle(320, 240, 800, 850, 0x222288);
-    this.add.image(320, 240, "title");
+    //this.add.image(320, 240, "title");
 
-    this.add.text(280, 50, "Karine et le mystère des kangourins",
+    this.add.text(150, 50, "Super game made up with SEA",
         { color: "white", fontFamily: 'Arial', fontSize: '64px', wordWrap: { width: 400, useAdvancedWrap: true } });
-    this.add.text(380, 350, "Press start",
+    this.add.text(280, 350, "Press start",
         { color: "white", fontFamily: 'Arial', fontSize: '32px' });
 
     music = this.sound.add("titleMusic");

@@ -8,7 +8,8 @@ export class Script {
     }
 
 
-
+    async init() {
+    }
 
     async John() {
         this.state.ok = !this.state.ok;
