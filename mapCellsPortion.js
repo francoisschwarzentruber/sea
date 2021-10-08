@@ -123,6 +123,8 @@ export class MapCellsPortion {
 
 
         this.phaser.physics.add.collider(this.player.obj, this.obstacles, (p, o) => {
+            /* this code is for the player to slide along the obstacles
+            it enables the player not to be litteraly blocked if only few pixels block her */
             const obstacleRight = p.x < o.x;
             const obstacleDown = p.y < o.y;
             const ratio = 0.5;
