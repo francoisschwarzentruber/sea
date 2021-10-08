@@ -104,6 +104,7 @@ function createObject(phaser, collection, x, y, name) {
     const obj = collection.create(x, y, "none");
     phaser.load.image(name, `assets/${name}.png`)
     phaser.load.once(Phaser.Loader.Events.COMPLETE, () => { obj.setTexture(name) });
+    obj.setBounce(1);
     phaser.load.start();
     return obj;
 }

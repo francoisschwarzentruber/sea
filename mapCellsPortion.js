@@ -122,7 +122,14 @@ export class MapCellsPortion {
             }
 
 
-        this.phaser.physics.add.collider(this.player.obj, this.obstacles);
+        this.phaser.physics.add.collider(this.player.obj, this.obstacles, (p, o) => {
+            const obstacleRight = p.x < o.x;
+            const obstacleDown = p.y < o.y;
+            const ratio = 0.5;
+            p.y += ratio*(obstacleDown ? -1 : 1);
+            p.x += ratio*(obstacleRight ? -1 : 1);
+
+        });
     }
 
 
